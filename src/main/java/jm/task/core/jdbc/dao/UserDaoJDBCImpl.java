@@ -10,6 +10,7 @@ import static jm.task.core.jdbc.util.Util.getConnection;
 
 public class UserDaoJDBCImpl implements UserDao {
     Connection connection = getConnection();
+    User user = new User();
 
     public UserDaoJDBCImpl() {
 
@@ -18,10 +19,11 @@ public class UserDaoJDBCImpl implements UserDao {
     public void createUsersTable() throws SQLException {
         String sql = "CREATE TABLE IF NOT EXISTS USERS" +
                 "(" +
-                "id INTEGER UNIQUE ," +
+                "id INT NOT NULL AUTO_INCREMENT ," +
                 "name TEXT," +
                 "last_name TEXT," +
-                "age INTEGER" +
+                "age INT," +
+                "PRIMARY KEY (id)"+
                 ");";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -49,10 +51,13 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setString(2, lastName);
             preparedStatement.setByte(3, age);
 
+            user.setName(name);
+
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println("User с именем "+user.getName()+" добавлен в базу данных");
     }
 
     public void removeUserById(long id) {
@@ -79,16 +84,17 @@ public class UserDaoJDBCImpl implements UserDao {
 
             while (resultSet.next()) {
                 User user = new User();
-                user.setId(resultSet.getLong("ID"));
-                user.setName(resultSet.getString("NAME"));
-                user.setLastName(resultSet.getString("LAST_NAME"));
-                user.setAge(resultSet.getByte("AGE"));
+                user.setId(resultSet.getLong("id"));
+                user.setName(resultSet.getString("name"));
+                user.setLastName(resultSet.getString("last_name"));
+                user.setAge(resultSet.getByte("age"));
 
                 userList.add(user);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println(userList);
         return userList;
     }
 
