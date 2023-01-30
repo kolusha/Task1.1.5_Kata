@@ -13,7 +13,6 @@ public class Main {
         userService.createUsersTable();
         for(int i = 1; i < 5; i++){
             userService.saveUser("Name"+ i, "LastName" + i, (byte) (i*10));
-            System.out.println("User с имененм Name"+ i +" добавлен в базу данных");
         }
 
         userService.getAllUsers();
